@@ -2,80 +2,86 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Tính tiền </title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tính tiền</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   font-family: Arial;
   margin: 0;
-  padding: 30px;
+  padding: 15px;
 
-  /* 🌄 Background full */
   background-image: url("https://pixpretty.tenorshare.ai/inspiration/15.png?w=5475&h=2993");
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
   background-attachment: fixed;
 }
 
-/* 🌫 overlay tối cho dễ nhìn */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.35);
+  background: rgba(0,0,0,0.4);
   z-index: -1;
 }
 
 .container {
-  max-width: 1000px;
+  max-width: 500px;
   margin: auto;
-  background: rgba(243, 242, 238, 0.9);
-  padding: 20px;
+  background: rgba(255,255,255,0.95);
+  padding: 15px;
   border-radius: 12px;
-  backdrop-filter: blur(10px);
 }
 
 h2 {
   text-align: center;
+  font-size: 20px;
 }
 
+/* 📱 FORM DỌC (quan trọng) */
 .form {
   display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .form input {
-  padding: 8px;
-  flex: 1;
+  padding: 10px;
+  font-size: 16px;
 }
 
 button {
-  padding: 8px 14px;
+  padding: 12px;
+  font-size: 16px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   background: #ff4d6d;
   color: white;
   cursor: pointer;
 }
 
-button:hover {
-  background: #e6005c;
+button:active {
+  transform: scale(0.97);
+}
+
+/* 📱 TABLE CUỘN NGANG */
+.table-wrap {
+  overflow-x: auto;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 10px;
+  min-width: 400px;
 }
 
 th, td {
   border: 1px solid #ddd;
-  padding: 10px;
+  padding: 8px;
+  font-size: 14px;
   text-align: center;
 }
 
@@ -90,9 +96,15 @@ input.qty {
 
 .total-box {
   text-align: right;
-  font-size: 22px;
-  margin-top: 15px;
+  font-size: 20px;
+  margin-top: 10px;
   color: #d63384;
+}
+
+/* 🎯 NÚT LINK */
+.link-box {
+  margin-top: 15px;
+  text-align: center;
 }
 </style>
 </head>
@@ -100,36 +112,41 @@ input.qty {
 <body>
 
 <div class="container">
-  <h2>💸 Tinh Tiền</h2>
+  <h2>💸 Tính Tiền</h2>
 
   <div class="form">
     <input id="ten" placeholder="Tên sản phẩm">
     <input id="gia" type="number" placeholder="Đơn giá">
-    <button onclick="themSanPham()">Thêm</button>
-    <button onclick="resetAll()">Reset</button>
+
+    <button onclick="themSanPham()">➕ Thêm sản phẩm</button>
+    <button onclick="resetAll()">🔄 Reset</button>
   </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Tên</th>
-        <th>Giá</th>
-        <th>SL</th>
-        <th>Thành tiền</th>
-        <th>Xoá</th>
-      </tr>
-    </thead>
-
-    <tbody id="table-body"></tbody>
-  </table>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Tên</th>
+          <th>Giá</th>
+          <th>SL</th>
+          <th>Tiền</th>
+          <th>X</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
 
   <div class="total-box">
     Tổng: <span id="tong">0</span> đ
   </div>
+
+  <div class="link-box">
+    <a href="https://xosodaiphat.com/xsmn-xo-so-mien-nam.html" target="_blank">
+      <button>🎲 Xem xổ số</button>
+    </a>
+  </div>
 </div>
-<button onclick="window.open('https://xosodaiphat.com/xsmn-xo-so-mien-nam.html', '_blank')">
-  🔗 kết quả só xố
-</button>
 
 <script>
 function format(n) {
@@ -143,12 +160,11 @@ function tinhTien() {
     const gia = Number(row.querySelector(".gia").innerText);
     const sl = Number(row.querySelector(".qty").value);
 
-    const thanhTien = gia * sl;
-    row.querySelector(".tt").innerText = format(thanhTien);
+    const tt = gia * sl;
+    row.querySelector(".tt").innerText = format(tt);
 
     row.style.background = sl > 0 ? "#fff0f6" : "";
-
-    tong += thanhTien;
+    tong += tt;
   });
 
   document.getElementById("tong").innerText = format(tong);
@@ -167,15 +183,12 @@ function themSanPham() {
   const tr = document.createElement("tr");
 
   tr.innerHTML = `
-    <td class="ten"></td>
-    <td class="gia"></td>
-    <td><input class="qty" type="number" value="0" min="0"></td>
+    <td>${ten}</td>
+    <td class="gia">${gia}</td>
+    <td><input class="qty" type="number" value="0"></td>
     <td class="tt">0</td>
     <td><button class="xoa">❌</button></td>
   `;
-
-  tr.querySelector(".ten").innerText = ten;
-  tr.querySelector(".gia").innerText = gia;
 
   tr.querySelector(".qty").addEventListener("input", tinhTien);
 
@@ -208,16 +221,16 @@ function load() {
   if (data) {
     document.getElementById("table-body").innerHTML = data;
 
-    document.querySelectorAll(".qty").forEach(input => {
-      input.addEventListener("input", tinhTien);
-    });
+    document.querySelectorAll(".qty").forEach(i =>
+      i.addEventListener("input", tinhTien)
+    );
 
-    document.querySelectorAll(".xoa").forEach(btn => {
+    document.querySelectorAll(".xoa").forEach(btn =>
       btn.onclick = () => {
         btn.closest("tr").remove();
         tinhTien();
-      };
-    });
+      }
+    );
 
     tinhTien();
   }
