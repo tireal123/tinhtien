@@ -124,7 +124,7 @@ input.qty { width: 60px; }
   <h3>📋 Giá miền Nam Trung</h3>
   <div id="goi-y"></div>
 
-  <h3>🔥 Giá miền Bắc</h3>
+  <h3>🔥 Gía miền Bắc</h3>
   <div id="goi-y-2"></div>
 
   <div class="table-wrap">
@@ -145,7 +145,23 @@ input.qty { width: 60px; }
   <div class="total-box">
     Tổng: <span id="tong">0</span> đ
   </div>
+<div class="total-box">
+  Tổng: <span id="tong">0</span> đ
+</div>
+<div style="margin-top:10px;">
+  <button onclick="luuLichSu()" style="background:#28a745;">💾 Lưu</button>
+  <button onclick="xemLichSu()" style="background:#6f42c1;">📜 Lịch sử</button>
+  <button onclick="xoaLichSu()" style="background:#dc3545;">🗑 Xoá</button>
+</div>
 
+<div id="history-box" style="
+  margin-top:10px;
+  max-height:200px;
+  overflow:auto;
+  background:#f8f9fa;
+  padding:10px;
+  border-radius:8px;
+"></div>
   <div class="link-box">
     <a href="https://xosodaiphat.com/xsmn-xo-so-mien-nam.html" target="_blank">
       <button>🎲 Xem xổ số</button>
@@ -317,6 +333,52 @@ function load() {
 renderGoiY();
 renderGoiY2();
 load();
+/* 🔥 LƯU LỊCH SỬ */
+function luuLichSu() {
+  const data = document.getElementById("table-body").innerHTML;
+  const tong = document.getElementById("tong").innerText;
+  const time = new Date().toLocaleString();
+
+  let list = JSON.parse(localStorage.getItem("history") || "[]");
+
+  list.push({ time, data, tong });
+
+  localStorage.setItem("history", JSON.stringify(list));
+
+  alert("Đã lưu!");
+}
+
+/* 🔥 XEM LỊCH SỬ */
+function xemLichSu() {
+  const box = document.getElementById("history-box");
+  const list = JSON.parse(localStorage.getItem("history") || "[]");
+
+  box.innerHTML = "";
+
+  if (list.length === 0) {
+    box.innerHTML = "Không có lịch sử";
+    return;
+  }
+
+  list.slice().reverse().forEach(item => {
+    box.innerHTML += `
+      <div style="margin-bottom:10px;">
+        <b>${item.time}</b>
+        <div>Tổng: ${item.tong} đ</div>
+        <table>${item.data}</table>
+      </div>
+      <hr>
+    `;
+  });
+}
+
+/* 🔥 XOÁ LỊCH SỬ */
+function xoaLichSu() {
+  if (confirm("Xoá toàn bộ lịch sử?")) {
+    localStorage.removeItem("history");
+    document.getElementById("history-box").innerHTML = "";
+  }
+}
 </script>
 
 </body>
